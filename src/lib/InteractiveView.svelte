@@ -28,6 +28,18 @@
     userMove.handleScroll(event);
   }
 
+  function handleKeyPress(event: KeyboardEvent) {
+    if (event.key === "Escape") {
+      cursorState.current = "select";
+    }
+    if (event.key === "h") {
+      cursorState.current = "hand";
+    }
+    if (event.key === "v") {
+      cursorState.current = "select";
+    }
+  }
+
   let backgroundImageStyle = $derived(
     `
   background-size: ${userMove.state.zoom * 40}px ${userMove.state.zoom * 40}px;
@@ -48,6 +60,7 @@
 
 <div>
   <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+  <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
   <article
     onwheel={handleScroll}
     onpointerdown={handlePointerDown}
@@ -55,6 +68,7 @@
     onpointerup={handlePointerUp}
     onpointercancel={handlePointerUp}
     onpointerleave={handlePointerUp}
+    onkeypress={handleKeyPress}
     tabindex="0"
     class:grab={cursorState.current == "hand"}
     class:select={cursorState.current == "select"}
@@ -103,6 +117,9 @@
   .grab {
     cursor: grab;
     user-select: none;
+  }
+  .grab.noTransition {
+    cursor: grabbing;
   }
   .select {
     cursor: default;
