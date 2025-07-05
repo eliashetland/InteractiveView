@@ -1,5 +1,5 @@
 
-export type State = "hand" | "select";
+export type State = "hand" | "select" | "create";
 
 interface ICursorState {
     current: State;

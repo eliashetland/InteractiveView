@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { Hand, MousePointer2, Move } from "@lucide/svelte";
+  import { Hand, MousePointer2, Square } from "@lucide/svelte";
   import { cursorState, type State } from "./cursorState/cursorState.svelte";
 
-    let current: State = cursorState.current;
+  let current: State = cursorState.current;
 </script>
 
 <nav>
@@ -24,6 +24,14 @@
     aria-current={cursorState.current === "hand" ? "true" : "false"}
   >
     <Hand />
+  </button>
+  <button
+    class="button"
+    title="Rectangle R"
+    onclick={() => (cursorState.current = "create")}
+    aria-current={cursorState.current === "create" ? "true" : "false"}
+  >
+    <Square />
   </button>
 </nav>
 

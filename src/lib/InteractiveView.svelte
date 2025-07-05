@@ -15,6 +15,26 @@
     if (cursorState.current === "hand") {
       userMove.handlePointerDown(event);
     }
+    if (cursorState.current === "create") {
+      const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+      const offsetX = event.clientX - rect.left;
+      const offsetY = event.clientY - rect.top;
+
+      const newObject: IObject = {
+        id: crypto.randomUUID(),
+        name: "New Object",
+        type: "rectangle",
+        position: {
+          x: (offsetX - userMove.state.translateX) / userMove.state.zoom,
+          y: (offsetY - userMove.state.translateY) / userMove.state.zoom,
+        },
+        size: { width: 100, height: 100 },
+      };
+
+      console.log(userMove.state);
+
+      objectState.addObject(newObject);
+    }
   }
 
   function handlePointerMove(event: PointerEvent) {
@@ -40,6 +60,9 @@
     }
     if (event.key === "v") {
       cursorState.current = "select";
+    }
+    if (event.key === "r") {
+      cursorState.current = "create";
     }
   }
 
@@ -75,6 +98,7 @@
     tabindex="0"
     class:grab={cursorState.current == "hand"}
     class:select={cursorState.current == "select"}
+    class:create={cursorState.current == "create"}
     style={backgroundImageStyle}
     class:noTransition={userMove.state.isDragging}
   >
@@ -113,8 +137,6 @@
   article {
     transition: background 0.15s ease-in-out;
     background: radial-gradient(#a1a1a1 1px, transparent 1px);
-    padding: 20px;
-    overflow: hidden;
     overflow: hidden;
   }
 
@@ -131,5 +153,8 @@
   }
   .select {
     cursor: default;
+  }
+  .create {
+    cursor: crosshair;
   }
 </style>
