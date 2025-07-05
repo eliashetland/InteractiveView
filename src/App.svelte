@@ -1,13 +1,12 @@
 <script lang="ts">
   import InteractiveView from "./lib/InteractiveView.svelte";
+  import type { IObject } from "./lib/object/IObject";
+  import { objectState } from "./lib/objectState/objectState.svelte";
 </script>
 
 <main>
   <div>
-    <InteractiveView>
-      <h1 >Welcome to the Interactive View!</h1>
-      <p>This is a simple interactive component built with Svelte.</p>
-    </InteractiveView>
+    <InteractiveView />
   </div>
 </main>
 
@@ -24,10 +23,5 @@
     width: 80%;
     height: 80%;
     max-width: 800px;
-  }
-  h1 {
-    font-size: 2rem;
-    color: #333;
-    background-color: cadetblue;
   }
 </style>

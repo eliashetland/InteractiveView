@@ -1,12 +1,15 @@
 <script lang="ts">
   import ToolBar from "./ToolBar.svelte";
-
-  let { children } = $props<{
-    children: () => any;
-  }>();
-
   import { cursorState, type State } from "./cursorState/cursorState.svelte";
   import { userMove } from "./move/userPositionState.svelte";
+  import type { IObject } from "./object/IObject";
+  import Square from "./object/Square.svelte";
+  import { objectState } from "./objectState/objectState.svelte";
+
+  let { children, objects } = $props<{
+    children?: () => any;
+    objects?: IObject[];
+  }>();
 
   function handlePointerDown(event: PointerEvent) {
     if (cursorState.current === "hand") {
@@ -79,7 +82,12 @@
       style={userPositionStyle}
       class:noTransition={userMove.state.isDragging}
     >
-      {@render children()}
+      {#each objectState.objects as object (object.id)}
+        <Square {object} />
+      {/each}
+      {#if children}
+        {@render children()}
+      {/if}
     </section>
   </article>
 
