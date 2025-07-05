@@ -33,15 +33,10 @@
 
   let backgroundImageStyle = $derived(
     `
-    background-size: ${userMove.state.zoom * 40}px ${userMove.state.zoom * 40}px;
-    background-position: ${userMove.state.translateX}px ${userMove.state.translateY}px;
-    background-repeat: repeat;
-        background-image: radial-gradient(
-      circle,
-      #a1a1a1 ${userMove.state.zoom}px,
-      rgba(0, 0, 0, 0) 0px
-    );
-    `
+  background-size: ${userMove.state.zoom * 40}px ${userMove.state.zoom * 40}px;
+  background-position: ${userMove.state.translateX}px ${userMove.state.translateY}px;
+  background-repeat: repeat;
+  `
   );
 
   let userPositionStyle = $derived(
@@ -100,8 +95,7 @@
 
   article {
     transition: background 0.15s ease-in-out;
-
-
+    background: radial-gradient(#a1a1a1 1px, transparent 1px);
     padding: 20px;
     overflow: hidden;
     overflow: hidden;
