@@ -15,7 +15,7 @@ export interface IUserPositionState {
 }
 
 const userPositionState: IUserPositionState = $state({
-    minZoom: 0.1,
+    minZoom: 0.3,
     maxZoom: 5,
     translateX: 0,
     translateY: 0,

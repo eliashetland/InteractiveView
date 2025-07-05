@@ -11,6 +11,7 @@
   </p>
   <button
     class="button"
+    title="Select Tool V"
     onclick={() => (cursorState.current = "select")}
     aria-current={cursorState.current === "select" ? "true" : "false"}
   >
@@ -18,6 +19,7 @@
   </button>
   <button
     class="button"
+    title="Hand Tool H"
     onclick={() => (cursorState.current = "hand")}
     aria-current={cursorState.current === "hand" ? "true" : "false"}
   >
