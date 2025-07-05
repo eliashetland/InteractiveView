@@ -11,13 +11,6 @@
   </p>
   <button
     class="button"
-    onclick={() => (cursorState.current = "move")}
-    aria-current={cursorState.current === "move" ? "true" : "false"}
-  >
-    <Move />
-  </button>
-  <button
-    class="button"
     onclick={() => (cursorState.current = "select")}
     aria-current={cursorState.current === "select" ? "true" : "false"}
   >
@@ -25,8 +18,8 @@
   </button>
   <button
     class="button"
-    onclick={() => (cursorState.current = "grab")}
-    aria-current={cursorState.current === "grab" ? "true" : "false"}
+    onclick={() => (cursorState.current = "hand")}
+    aria-current={cursorState.current === "hand" ? "true" : "false"}
   >
     <Hand />
   </button>

@@ -51,7 +51,7 @@ export const userMove = {
         userPositionState.isDragging = false;
     },
 
-    handleScroll(event: WheelEvent) {
+    handleZoom(event: WheelEvent) {
         const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
         const offsetX = event.clientX - rect.left;
         const offsetY = event.clientY - rect.top;
@@ -76,5 +76,21 @@ export const userMove = {
             offsetX - (offsetX - userPositionState.translateX) * zoomFactor;
         userPositionState.translateY =
             offsetY - (offsetY - userPositionState.translateY) * zoomFactor;
+    },
+
+    handleScroll(event: WheelEvent) {
+        event.preventDefault();
+        if (event.ctrlKey || event.metaKey) {
+            this.handleZoom(event);
+            return;
+        }
+        if (event.shiftKey) {
+            userPositionState.translateX -= event.deltaY;
+            return
+        }
+
+        userPositionState.translateY -= event.deltaY;
+
+
     },
 }

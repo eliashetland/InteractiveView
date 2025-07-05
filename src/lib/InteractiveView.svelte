@@ -9,13 +9,13 @@
   import { userMove } from "./move/userPositionState.svelte";
 
   function handlePointerDown(event: PointerEvent) {
-    if (cursorState.current === "move") {
+    if (cursorState.current === "hand") {
       userMove.handlePointerDown(event);
     }
   }
 
   function handlePointerMove(event: PointerEvent) {
-    if (cursorState.current === "move") {
+    if (cursorState.current === "hand") {
       userMove.handlePointerMove(event);
     }
   }
@@ -25,10 +25,7 @@
   }
 
   function handleScroll(event: WheelEvent) {
-    event.preventDefault();
-    if (cursorState.current === "move") {
-      userMove.handleScroll(event);
-    }
+    userMove.handleScroll(event);
   }
 
   let backgroundImageStyle = $derived(
@@ -59,8 +56,7 @@
     onpointercancel={handlePointerUp}
     onpointerleave={handlePointerUp}
     tabindex="0"
-    class:grab={cursorState.current == "grab"}
-    class:move={cursorState.current == "move"}
+    class:grab={cursorState.current == "hand"}
     class:select={cursorState.current == "select"}
     style={backgroundImageStyle}
     class:noTransition={userMove.state.isDragging}
@@ -83,7 +79,6 @@
     background-color: white;
     height: 100%;
     width: 100%;
-    overflow: hidden;
     display: grid;
     grid-template-rows: 1fr auto;
   }
@@ -107,10 +102,6 @@
 
   .grab {
     cursor: grab;
-    user-select: none;
-  }
-  .move {
-    cursor: move;
     user-select: none;
   }
   .select {
