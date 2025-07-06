@@ -13,27 +13,29 @@
 
   function handlePointerDown(event: PointerEvent) {
     if (cursorState.current === "hand") {
-      userMove.handlePointerDown(event);
+      userMove.handleMoveStart(event);
     }
     if (cursorState.current === "create") {
-      const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
-      const offsetX = event.clientX - rect.left;
-      const offsetY = event.clientY - rect.top;
+      userMove.handleCreateObjectStart(event);
 
-      const newObject: IObject = {
-        id: crypto.randomUUID(),
-        name: "New Object",
-        type: "rectangle",
-        position: {
-          x: (offsetX - userMove.state.translateX) / userMove.state.zoom,
-          y: (offsetY - userMove.state.translateY) / userMove.state.zoom,
-        },
-        size: { width: 100, height: 100 },
-      };
+      //   const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+      //   const offsetX = event.clientX - rect.left;
+      //   const offsetY = event.clientY - rect.top;
 
-      console.log(userMove.state);
+      //   const newObject: IObject = {
+      //     id: crypto.randomUUID(),
+      //     name: "New Object",
+      //     type: "rectangle",
+      //     position: {
+      //       x: (offsetX - userMove.state.translateX) / userMove.state.zoom,
+      //       y: (offsetY - userMove.state.translateY) / userMove.state.zoom,
+      //     },
+      //     size: { width: 100, height: 100 },
+      //   };
 
-      objectState.addObject(newObject);
+      //   console.log(userMove.state);
+
+      //   objectState.addObject(newObject);
     }
   }
 
@@ -41,10 +43,18 @@
     if (cursorState.current === "hand") {
       userMove.handlePointerMove(event);
     }
+    if (cursorState.current === "create") {
+      userMove.handleCreateObjectMove(event);
+    }
   }
 
   function handlePointerUp() {
-    userMove.handlePointerUp();
+    if (cursorState.current === "hand") {
+      userMove.handleMoveEnd();
+    }
+    if (cursorState.current === "create") {
+      userMove.handleCreateObjectEnd();
+    }
   }
 
   function handleScroll(event: WheelEvent) {
@@ -112,6 +122,26 @@
       {#if children}
         {@render children()}
       {/if}
+
+      {#if userMove.creatingObjectState.isCreating}
+        <Square
+          creating
+          object={{
+            id: crypto.randomUUID(),
+            name: "",
+            type: "rectangle",
+            position: {
+              x: userMove.creatingObjectState.dragStartX,
+              y: userMove.creatingObjectState.dragStartY,
+            },
+
+            size: {
+              width: userMove.creatingObjectState.width,
+              height: userMove.creatingObjectState.height,
+            },
+          }}
+        />
+      {/if}
     </section>
   </article>
 
@@ -156,5 +186,6 @@
   }
   .create {
     cursor: crosshair;
+    user-select: none;
   }
 </style>

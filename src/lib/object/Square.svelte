@@ -2,15 +2,19 @@
   import { objectState } from "../objectState/objectState.svelte";
   import type { IObject } from "./IObject";
 
-  let { object }: { object: IObject } = $props<{
+  interface IObjectProps {
     object: IObject;
-  }>();
+    creating?: boolean;
+  }
+
+  let { object, creating }: IObjectProps = $props();
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
   class="square"
+  class:creating
   class:selected={object.id === objectState.currentSelected}
   onclick={() => {
     objectState.currentSelected = object.id;
@@ -45,5 +49,10 @@
     padding: 2px;
     font-size: 14px;
     color: var(--color-text, #333);
+  }
+
+  .creating {
+    border: 2px dashed #2f73b7;
+    background-color: rgba(105, 190, 205, 0.375);
   }
 </style>

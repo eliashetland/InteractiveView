@@ -1,3 +1,5 @@
+import type { IObject } from "../object/IObject";
+import { objectState } from "../objectState/objectState.svelte";
 import { Utils } from "../utils/utils";
 
 export interface IUserPositionState {
@@ -28,15 +30,58 @@ const userPositionState: IUserPositionState = $state({
     initialY: 0,
 });
 
+const creatingObjectState = $state({
+    dragStartX: 0,
+    dragStartY: 0,
+    width: 0,
+    height: 0,
+    isCreating: false,
+});
+
+const clearObjectState = () => {
+    creatingObjectState.dragStartX = 0;
+    creatingObjectState.dragStartY = 0;
+    creatingObjectState.width = 0;
+    creatingObjectState.height = 0;
+    creatingObjectState.isCreating = false;
+};
+
+
+
 export const userMove = {
     state: userPositionState,
+    creatingObjectState: creatingObjectState,
 
-    handlePointerDown(event: PointerEvent) {
+    handleMoveStart(event: PointerEvent) {
+        if (event.button !== 0) return; // Only handle left mouse button
         userPositionState.isDragging = true;
         userPositionState.initialX = userPositionState.translateX;
         userPositionState.initialY = userPositionState.translateY;
         userPositionState.dragStartX = event.clientX;
         userPositionState.dragStartY = event.clientY;
+    },
+
+    handleCreateObjectStart(event: PointerEvent, objectType: string = "rectangle") {
+        const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+        const offsetX = event.clientX - rect.left;
+        const offsetY = event.clientY - rect.top;
+
+        creatingObjectState.dragStartX = (offsetX - userMove.state.translateX) / userMove.state.zoom;
+        creatingObjectState.dragStartY = (offsetY - userMove.state.translateY) / userMove.state.zoom;
+        creatingObjectState.isCreating = true;
+    },
+
+    handleCreateObjectMove(event: PointerEvent) {
+        if (!creatingObjectState.isCreating) return;
+        const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+        const offsetX = event.clientX - rect.left;
+        const offsetY = event.clientY - rect.top;
+
+        const x = (offsetX - userMove.state.translateX) / userMove.state.zoom;
+        const y = (offsetY - userMove.state.translateY) / userMove.state.zoom;
+
+        creatingObjectState.width = x - creatingObjectState.dragStartX;
+        creatingObjectState.height = y - creatingObjectState.dragStartY;
     },
 
     handlePointerMove(event: PointerEvent) {
@@ -47,8 +92,29 @@ export const userMove = {
         userPositionState.translateY = userPositionState.initialY + dy;
     },
 
-    handlePointerUp() {
+    handleMoveEnd() {
         userPositionState.isDragging = false;
+    },
+
+    handleCreateObjectEnd() {
+        if (!creatingObjectState.isCreating) return;
+
+        const newObject: IObject = {
+            id: crypto.randomUUID(),
+            name: "New Object",
+            type: "rectangle",
+            position: {
+                x: creatingObjectState.dragStartX,
+                y: creatingObjectState.dragStartY,
+            },
+            size: {
+                width: creatingObjectState.width,
+                height: creatingObjectState.height,
+            },
+        };
+
+        objectState.addObject(newObject);
+        clearObjectState();
     },
 
     handleZoom(event: WheelEvent) {
