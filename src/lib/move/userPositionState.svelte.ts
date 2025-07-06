@@ -124,7 +124,7 @@ export const userMove = {
         const newObject: IObject = {
             id: crypto.randomUUID(),
             name: "New Object",
-            type: "rectangle",
+            type: objectState.currentObjectType,
             position: {
                 x: creatingObjectState.drawRectStartX,
                 y: creatingObjectState.drawRectStartY,

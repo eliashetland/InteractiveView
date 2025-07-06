@@ -2,14 +2,9 @@
   import ToolBar from "./ToolBar.svelte";
   import { cursorState, type State } from "./cursorState/cursorState.svelte";
   import { userMove } from "./move/userPositionState.svelte";
-  import type { IObject } from "./object/IObject";
-  import Square from "./object/Square.svelte";
+  import ObjectComponent from "./object/ObjectComponent.svelte";
+  import Square from "./object/ObjectComponent.svelte";
   import { objectState } from "./objectState/objectState.svelte";
-
-  let { children, objects } = $props<{
-    children?: () => any;
-    objects?: IObject[];
-  }>();
 
   function handlePointerDown(event: PointerEvent) {
     if (cursorState.current === "hand") {
@@ -17,25 +12,6 @@
     }
     if (cursorState.current === "create") {
       userMove.handleCreateObjectStart(event);
-
-      //   const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
-      //   const offsetX = event.clientX - rect.left;
-      //   const offsetY = event.clientY - rect.top;
-
-      //   const newObject: IObject = {
-      //     id: crypto.randomUUID(),
-      //     name: "New Object",
-      //     type: "rectangle",
-      //     position: {
-      //       x: (offsetX - userMove.state.translateX) / userMove.state.zoom,
-      //       y: (offsetY - userMove.state.translateY) / userMove.state.zoom,
-      //     },
-      //     size: { width: 100, height: 100 },
-      //   };
-
-      //   console.log(userMove.state);
-
-      //   objectState.addObject(newObject);
     }
   }
 
@@ -72,7 +48,12 @@
       cursorState.current = "select";
     }
     if (event.key === "r") {
-      cursorState.current = "create";
+        cursorState.current = "create";
+        objectState.currentObjectType = "rectangle";
+    }
+    if (event.key === "c") {
+        cursorState.current = "create";
+        objectState.currentObjectType = "circle";
     }
   }
 
@@ -117,19 +98,16 @@
       class:noTransition={userMove.state.isDragging}
     >
       {#each objectState.objects as object (object.id)}
-        <Square {object} />
+        <ObjectComponent {object} />
       {/each}
-      {#if children}
-        {@render children()}
-      {/if}
 
       {#if userMove.creatingObjectState.isCreating}
-        <Square
+        <ObjectComponent
           creating
           object={{
-            id: crypto.randomUUID(),
+            id: "-1",
             name: "",
-            type: "rectangle",
+            type: objectState.currentObjectType,
             position: {
               x: userMove.creatingObjectState.drawRectStartX,
               y: userMove.creatingObjectState.drawRectStartY,

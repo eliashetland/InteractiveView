@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { Hand, MousePointer2, Square } from "@lucide/svelte";
+  import { Hand, MousePointer2, Square, Circle } from "@lucide/svelte";
   import { cursorState, type State } from "./cursorState/cursorState.svelte";
+  import { objectState } from "./objectState/objectState.svelte";
 
   let current: State = cursorState.current;
 </script>
@@ -28,10 +29,30 @@
   <button
     class="button"
     title="Rectangle R"
-    onclick={() => (cursorState.current = "create")}
-    aria-current={cursorState.current === "create" ? "true" : "false"}
+    onclick={() => {
+      cursorState.current = "create";
+      objectState.currentObjectType = "rectangle";
+    }}
+    aria-current={cursorState.current === "create" &&
+    objectState.currentObjectType === "rectangle"
+      ? "true"
+      : "false"}
   >
     <Square />
+  </button>
+  <button
+    class="button"
+    title="Rectangle C"
+    onclick={() => {
+      cursorState.current = "create";
+      objectState.currentObjectType = "circle";
+    }}
+    aria-current={cursorState.current === "create" &&
+    objectState.currentObjectType === "circle"
+      ? "true"
+      : "false"}
+  >
+    <Circle />
   </button>
 </nav>
 

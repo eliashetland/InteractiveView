@@ -1,11 +1,9 @@
 <script lang="ts">
-  import { objectState } from "../objectState/objectState.svelte";
   import type { IObject } from "./IObject";
-
-  interface IObjectProps {
-    object: IObject;
-    creating?: boolean;
-  }
+  import { objectState } from "../objectState/objectState.svelte";
+  import type { IObjectProps } from "./ObjectComponent.svelte";
+  import { userMove } from "../move/userPositionState.svelte";
+  import { cursorState } from "../cursorState/cursorState.svelte";
 
   let { object, creating }: IObjectProps = $props();
 </script>
@@ -17,6 +15,7 @@
   class:creating
   class:selected={object.id === objectState.currentSelected}
   onclick={() => {
+    if (cursorState.current !== "select") return;
     objectState.currentSelected = object.id;
   }}
   style="left: {object.position.x}px; top: {object.position.y}px; width: {object
