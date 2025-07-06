@@ -33,6 +33,10 @@ const userPositionState: IUserPositionState = $state({
 const creatingObjectState = $state({
     dragStartX: 0,
     dragStartY: 0,
+    drawRectStartX: 0,
+    drawRectStartY: 0,
+    currentX: 0,
+    currentY: 0,
     width: 0,
     height: 0,
     isCreating: false,
@@ -41,10 +45,26 @@ const creatingObjectState = $state({
 const clearObjectState = () => {
     creatingObjectState.dragStartX = 0;
     creatingObjectState.dragStartY = 0;
+    creatingObjectState.drawRectStartX = 0;
+    creatingObjectState.drawRectStartY = 0;
+
+    creatingObjectState.currentX = 0;
+    creatingObjectState.currentY = 0;
     creatingObjectState.width = 0;
     creatingObjectState.height = 0;
     creatingObjectState.isCreating = false;
 };
+
+const getMousePosition = (event: PointerEvent): { x: number; y: number } => {
+    const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    const offsetX = event.clientX - rect.left;
+    const offsetY = event.clientY - rect.top;
+
+    return {
+        x: (offsetX - userPositionState.translateX) / userPositionState.zoom,
+        y: (offsetY - userPositionState.translateY) / userPositionState.zoom,
+    };
+}
 
 
 
@@ -61,27 +81,28 @@ export const userMove = {
         userPositionState.dragStartY = event.clientY;
     },
 
-    handleCreateObjectStart(event: PointerEvent, objectType: string = "rectangle") {
-        const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
-        const offsetX = event.clientX - rect.left;
-        const offsetY = event.clientY - rect.top;
+    handleCreateObjectStart(event: PointerEvent) {
+        const { x, y } = getMousePosition(event);
 
-        creatingObjectState.dragStartX = (offsetX - userMove.state.translateX) / userMove.state.zoom;
-        creatingObjectState.dragStartY = (offsetY - userMove.state.translateY) / userMove.state.zoom;
+        creatingObjectState.dragStartX = x;
+        creatingObjectState.dragStartY = y;
+        creatingObjectState.drawRectStartX = x;
+        creatingObjectState.drawRectStartY = y;
         creatingObjectState.isCreating = true;
     },
 
     handleCreateObjectMove(event: PointerEvent) {
         if (!creatingObjectState.isCreating) return;
-        const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
-        const offsetX = event.clientX - rect.left;
-        const offsetY = event.clientY - rect.top;
+        const { x, y } = getMousePosition(event);
 
-        const x = (offsetX - userMove.state.translateX) / userMove.state.zoom;
-        const y = (offsetY - userMove.state.translateY) / userMove.state.zoom;
+        creatingObjectState.currentX = x;
+        creatingObjectState.currentY = y;
 
-        creatingObjectState.width = x - creatingObjectState.dragStartX;
-        creatingObjectState.height = y - creatingObjectState.dragStartY;
+        creatingObjectState.drawRectStartY = Math.min(y, creatingObjectState.dragStartY);
+        creatingObjectState.drawRectStartX = Math.min(x, creatingObjectState.dragStartX);
+
+        creatingObjectState.width = Math.abs(creatingObjectState.currentX - creatingObjectState.dragStartX);
+        creatingObjectState.height = Math.abs(creatingObjectState.currentY - creatingObjectState.dragStartY);
     },
 
     handlePointerMove(event: PointerEvent) {
@@ -99,13 +120,14 @@ export const userMove = {
     handleCreateObjectEnd() {
         if (!creatingObjectState.isCreating) return;
 
+
         const newObject: IObject = {
             id: crypto.randomUUID(),
             name: "New Object",
             type: "rectangle",
             position: {
-                x: creatingObjectState.dragStartX,
-                y: creatingObjectState.dragStartY,
+                x: creatingObjectState.drawRectStartX,
+                y: creatingObjectState.drawRectStartY,
             },
             size: {
                 width: creatingObjectState.width,

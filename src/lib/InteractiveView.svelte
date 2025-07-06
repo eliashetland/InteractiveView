@@ -131,8 +131,8 @@
             name: "",
             type: "rectangle",
             position: {
-              x: userMove.creatingObjectState.dragStartX,
-              y: userMove.creatingObjectState.dragStartY,
+              x: userMove.creatingObjectState.drawRectStartX,
+              y: userMove.creatingObjectState.drawRectStartY,
             },
 
             size: {
