@@ -146,6 +146,7 @@
     transition: background 0.15s ease-in-out;
     background: radial-gradient(#a1a1a1 1px, transparent 1px);
     overflow: hidden;
+touch-action: none;
   }
 
   .noTransition {
